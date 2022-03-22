@@ -25,7 +25,7 @@ export const methods: { [key: string]: (...any: any) => any } = {
     },
     downloadJSX(path: string) {
         let file = 'psd2png.jsx';
-        copyFileSync(join(Editor.Project.path, './extensions/bit-map-font-creator', file), join(path, file));
+        copyFileSync(join(Editor.App.home, './extensions/bit-map-font-creator', file), join(path, file));
     }
 };
 
