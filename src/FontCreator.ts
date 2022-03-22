@@ -4,7 +4,7 @@ import { MaxRects } from './MaxRects';
 import { Frame, Fnt } from './fnt';
 
 export namespace FontCreator {
-    const space = 2;
+    const space = 1;
     let fnt: Fnt;
 
     export function createFont(srcPath: string, output: string, name = 'spriteAtlas'): boolean {
