@@ -1,0 +1,36 @@
+<div style="width: fit-content;">
+    <div class="info">
+
+        <div class="layout">
+            字体碎图目录：
+        </div>
+
+        <div class="layout">
+            <ui-input class="input" type="text" v-model="psdOutput" readonly></ui-input>
+            <ui-button class="btn1 flex-none" @click="openPsd">...</ui-button>
+        </div>
+
+        <div class="layout">
+            <ui-label>保存目录：</ui-label>
+        </div>
+
+        <div class="layout">
+            <ui-input class="input" type="text" v-model="saveFolder" readonly></ui-input>
+            <ui-button class="btn1 flex-none" @click="openSave">...</ui-button>
+        </div>
+
+    </div>
+    <br />
+    <div class="center">
+        <ui-button class="btn center" @click="ok" style="width: 200px;">开始创建</ui-button>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <div class="center">
+        使用说明：本功能需要先用<span class="link" @click="download">psd2png.jsx（点击下载）</span>脚本文件从psd中导出png文件。导出的<span
+            style="background-color: red;color: white;">目录名将作为创建字体的名称</span>。photoshop如何使用脚本请自行百度。
+    </div>
+</div>
