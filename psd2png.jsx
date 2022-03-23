@@ -1,18 +1,28 @@
+// var f_img = "{\"type\":\"sprite\" ,\"name\":\"{name}\" , \"img\":\"{img}\" ,\"x\":\"{x}\" ,\"y\":\"{y}\",\"w\":\"{w}\" ,\"h\":\"{h}\"}\n";
+// var f_lbl = "{\"type\":\"label\" ,\"name\":\"{name}\" , \"text\":\"{text}\" ,\"x\":\"{x}\"  ,\"y\":\"{y}\", \"textColor\":\"#{color}\", \"size\":\"{size}\", \"bold\":\"{bold}\", \"italic\":\"{italic}\"}\n";
+
 if (!hasFilePath()) {
     alert("File did not save\nPlease save the file and try again");
 } else {
     showExportDialog();
 }
 
-// var onlyImg = false;
+var usePNG8 = false;
 
 function showExportDialog() {
     var dialog = new Window("dialog", "导出");
+    var chk = dialog.add('checkbox');
+    chk.text = '使用PNG8压缩';
+    chk.checked = false;
+    chk.onClick = function () {
+        usePNG8 = !usePNG8;
+    };
     var okBtn = dialog.add('button');
     okBtn.text = '导出为...';
     okBtn.onClick = function () {
         var output = Folder.selectDialog('');
-        init(output + '');
+        if (output)
+            init(output + '');
         this.parent.close(0);
     };
     var cancelBtn = dialog.add('button');
@@ -25,7 +35,14 @@ function showExportDialog() {
 }
 
 function init(outPath) {
+
+    // var stageWidth = app.activeDocument.width.as("px").toFixed(0);
+    // var stageHeight = app.activeDocument.height.as("px").toFixed(0);
+
+    // var paths = outPath.split('/');
+    // var name = paths[paths.length - 1];
     app.activeDocument.duplicate();
+    // if (onlyImg)
     app.activeDocument.rasterizeAllLayers();//栅格化
     var layers = [];
     for (var i = 0, l = app.activeDocument.layers.length; i < l; i++) {
@@ -40,6 +57,17 @@ function init(outPath) {
         layer.visible = false;
     }
     createPng(outPath + '/', layers)
+    // var json = "{\"width\":" + stageWidth + ",\"height\":" + stageHeight + ",";
+    // json += "\"nodes\":[" + createElement(outPath + '/', layers) + "]";
+    // json += "}";
+
+    // var file = new File(outPath + '/' + name + ".json");
+    // file.remove();
+    // file.open("a");
+    // file.lineFeed = "\n";
+    // file.encoding = "utf-8";
+    // file.write(json);
+    // file.close();
     activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 }
 
@@ -51,12 +79,11 @@ function hasFilePath() {
 
 function getLayers(layer, collect) {
     if (!layer.layers || layer.layers.length == 0) {
-        if (!layer.visible) return null;
-        return layer;
+        collect.push(layer);
+        return;
     }
     for (var i = 0, n = layer.layers.length; i < n; i++) {
-        var child = getLayers(layer.layers[i], collect)
-        if (child) collect.push(child);
+        getLayers(layer.layers[i], collect);
     }
 }
 
@@ -113,7 +140,7 @@ function saveImg(name, dir) {
     pngSaveOptions.transparency = true;
     pngSaveOptions.includeProfile = false;
     pngSaveOptions.interlaced = true;
-    pngSaveOptions.PNG8 = false;
+    pngSaveOptions.PNG8 = !!usePNG8;
     app.activeDocument.saveAs(file, new PNGSaveOptions(), true, Extension.LOWERCASE);
     app.activeDocument.exportDocument(file, ExportType.SAVEFORWEB, pngSaveOptions);
 }
@@ -127,13 +154,41 @@ function createImage(layer, dir) {
     }
     doc.activeLayer = layer;
     var name = trim(layer.name);
+    // if (name.indexOf('9_') == 0) {
+    //     var a = name.split('_')[1].split(',');
+    //     layer.rasterize(RasterizeType.ENTIRELAYER);
+    //     changeToSlice(a, bounds.w, bounds.h);
+    // }
     saveImg(name, dir);
+    // if (name.indexOf('9_') == 0)
+    //     stepHistoryBack(12);
+    // alert('b');
     if (!layer.isBackgroundLayer) {
         if (bounds[2] != 0 && bounds[3] != 0) {
             stepHistoryBack(1);
         }
     }
+    // doc.close(SaveOptions.DONOTSAVECHANGES);
+    // return formatString(f_img, { 'name': name, img: name, x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h });
 }
+
+// function createLabel(layer) {
+//     var textItem = layer.textItem;
+//     // for (var key in textItem) {
+//     //     alert(key);
+//     // }
+//     var bounds = formatBounds(layer.bounds);
+//     var name = trim(layer.name);
+//     var bold = false;
+//     var italic = false;
+//     try {
+//         bold = textItem.fauxBold;
+//     } catch (e) { }
+//     try {
+//         italic = textItem.fauxItalic;
+//     } catch (e) { }
+//     return formatString(f_lbl, { 'name': name, x: bounds.x, y: bounds.y, text: textItem.contents, color: textItem.color.rgb.hexValue, size: textItem.size.as("px"), bold: bold, italic: italic });
+// }
 
 function createPng(dir, layers) {
     try {
@@ -147,3 +202,53 @@ function createPng(dir, layers) {
         alert(e)
     }
 }
+
+// function createElement(dir, layers) {
+//     // var doc = app.activeDocument;
+//     // var layers;
+//     // if (doc.layerSets && doc.layerSets[0] != null)
+//     //     layers = doc.layerSets[0].artLayers;
+//     // else layers = doc.artLayers;
+//     try {
+//         var elements = [];
+//         for (var i = layers.length - 1; i >= 0; i--) {
+//             var layer = layers[i];
+//             layer.visible = true;
+//             // alert(layer.kind);
+//             if (layer.kind == LayerKind.TEXT) {
+//                 elements[elements.length] = createLabel(layer);
+//             } else {
+//                 elements[elements.length] = createImage(layer, dir);
+//             }
+//             layer.visible = false;
+//         }
+//     } catch (e) {
+//         alert(e)
+//     }
+//     return elements.join(",");
+// }
+
+// function changeToSlice(a, w, h) {
+//     //a:[top, left, bottom, right]裁切偏移
+//     var top = Number(a[0]),
+//         left = Number(a[1]),
+//         bottom = Number(a[2]),
+//         right = Number(a[3]);
+//     var doc = app.activeDocument;
+//     doc.selection.select([[left + 1, 0], [w - right - 1, 0], [w - right - 1, h], [left + 1, h]], SelectionType.REPLACE);
+//     doc.selection.clear();
+//     // doc.selection.deselect();
+//     doc.selection.select([[w - right - 1, 0], [w, 0], [w, h], [w - right - 1, h]], SelectionType.REPLACE);
+//     w -= left + right + 2;
+//     doc.selection.translate(UnitValue(-w + ' px'), 0);
+//     // doc.selection.deselect();
+//     doc.trim(TrimType.TRANSPARENT, true, true, true, true);
+//     doc.selection.select([[0, top + 1], [w, top + 1], [w, h - bottom - 1], [0, h - bottom - 1]], SelectionType.REPLACE);
+//     doc.selection.clear();
+//     // doc.selection.deselect();
+//     doc.selection.select([[0, h - bottom - 1], [w, h - bottom - 1], [w, h], [0, h]], SelectionType.REPLACE);
+//     h -= top + bottom + 2;
+//     doc.selection.translate(0, UnitValue(-h + ' px'));
+//     doc.selection.deselect();
+//     doc.trim(TrimType.TRANSPARENT, true, true, true, true);
+// }
