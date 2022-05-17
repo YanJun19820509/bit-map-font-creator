@@ -31,6 +31,7 @@ export class Fnt {
     private _frames: Frame[] = [];
     private _name: string = '';
     private _size: { w: number, h: number } = { w: 0, h: 0 };
+    private _fontSize: number = 32;
 
     constructor(name: string) {
         this._name = name;
@@ -39,6 +40,11 @@ export class Fnt {
     public setSize(w: number, h: number) {
         this._size = { w: w, h: h };
     }
+
+    public setFontSize(n: number): void {
+        this._fontSize = n;
+    }
+    
 
     public addFrame(frame: Frame) {
         this._frames[this._frames.length] = frame;
@@ -49,8 +55,8 @@ export class Fnt {
         this._frames.forEach(frame => {
             framesContent += frame.getDictContent();
         });
-       return `info face="黑体" size=32 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
-common lineHeight=33 base=28 scaleW=${this._size.w} scaleH=${this._size.h} pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+       return `info face="黑体" size=${this._fontSize} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=${this._fontSize + 2} base=28 scaleW=${this._size.w} scaleH=${this._size.h} pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="${this._name}.png"
 chars count=${this._frames.length}
 ${framesContent}`;
