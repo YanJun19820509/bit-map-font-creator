@@ -6,6 +6,7 @@ import { Frame, Fnt } from './fnt';
 export namespace FontCreator {
     const space = 1;
     let fnt: Fnt;
+    let maxFontSize: { width: number, height: number };
 
     export function createFont(srcPath: string, output: string, name = 'spriteAtlas'): boolean {
         if (!fs.existsSync(srcPath)) {
@@ -14,7 +15,6 @@ export namespace FontCreator {
         }
         // console.log('aaa', srcPath, output, name);
         let types = ['png', 'PNG', 'jpg', 'jpeg', 'JPG', 'JPEG'];
-        // let files: string[] = [];
         let imgs: { name: string, img: images.Image, offset: Vec2 }[] = [];
         fnt = new Fnt(name);
         fs.readdirSync(srcPath).forEach(file => {
@@ -54,6 +54,7 @@ export namespace FontCreator {
                 let frame = new Frame(a.name);
                 frame.setOffset(p.x, p.y);
                 frame.setSize(w, h);
+                frame.setMaxSize(maxFontSize.width, maxFontSize.height);
                 fnt.addFrame(frame);
                 if (h > fontSize) fontSize = h;
             }
@@ -68,12 +69,15 @@ export namespace FontCreator {
         let all = 0,
             maxW = 0,
             maxH = 0;
+        maxFontSize = { width: 0, height: 0 };
         imgs.forEach(img => {
             let { width, height } = img.img.size();
             let b = (width + space) * (height + space);
             all += b;
             maxW = Math.max(maxW, width + space);
             maxH = Math.max(maxH, height + space);
+            if (maxFontSize.width < width) maxFontSize.width = width;
+            if (maxFontSize.height < height) maxFontSize.height = height;
         });
         let c = Math.ceil(Math.sqrt(all));
         let w = Math.max(c, maxW);
