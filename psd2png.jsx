@@ -5,14 +5,21 @@ if (!hasFilePath()) {
 }
 
 var usePNG8 = false;
+var isFont = false;
 
 function showExportDialog() {
     var dialog = new Window("dialog", "导出");
     var chk = dialog.add('checkbox');
     chk.text = '使用PNG8压缩';
-    chk.checked = false;
+    chk.checked = usePNG8;
     chk.onClick = function () {
         usePNG8 = !usePNG8;
+    };
+    var chk1 = dialog.add('checkbox');
+    chk1.text = '作为BitmapFont';
+    chk1.checked = isFont;
+    chk1.onClick = function () {
+        isFont = !isFont;
     };
     var okBtn = dialog.add('button');
     okBtn.text = '导出为...';
@@ -67,17 +74,20 @@ function getLayers(layer, collect) {
 }
 
 function trim(value) {
-    return value.replace(/\s/g, "_")
-        // .replace(/\./g, "_-0")
-        .replace(/\//g, "_-1")
-        .replace(/\\/g, "_-2")
-        .replace(/\*/g, "_-3")
-        .replace(/\:/g, "_-4")
-        .replace(/\?/g, "_-5")
-        .replace(/\"/g, "_-6")
-        .replace(/\</g, "_-7")
-        .replace(/\>/g, "_-8")
-        .replace(/\|/g, "_-9");
+    if (isFont)
+        return value.charCodeAt(0).toString(10);
+    else
+        return value.replace(/\s/g, "_")
+            // .replace(/\./g, "_-0")
+            .replace(/\//g, "_-1")
+            .replace(/\\/g, "_-2")
+            .replace(/\*/g, "_-3")
+            .replace(/\:/g, "_-4")
+            .replace(/\?/g, "_-5")
+            .replace(/\"/g, "_-6")
+            .replace(/\</g, "_-7")
+            .replace(/\>/g, "_-8")
+            .replace(/\|/g, "_-9");
 }
 
 function stepHistoryBack(n) {

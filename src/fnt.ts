@@ -9,7 +9,9 @@ export class Frame {
     }
 
     public setName(name = '') {
-        this._code = name.charCodeAt(0).toString(10);
+        if (name.length == 1)
+            this._code = name.charCodeAt(0).toString(10);
+        else this._code = name;
     }
 
     public setOffset(x: number, y: number) {
@@ -50,7 +52,7 @@ export class Fnt {
     public setFontSize(n: number): void {
         this._fontSize = n;
     }
-    
+
     public addFrame(frame: Frame) {
         this._frames[this._frames.length] = frame;
     }
@@ -60,7 +62,7 @@ export class Fnt {
         this._frames.forEach(frame => {
             framesContent += frame.getDictContent();
         });
-       return `info face="黑体" size=${this._fontSize} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+        return `info face="黑体" size=${this._fontSize} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
 common lineHeight=${this._fontSize + 2} base=28 scaleW=${this._size.w} scaleH=${this._size.h} pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="${this._name}.png"
 chars count=${this._frames.length}

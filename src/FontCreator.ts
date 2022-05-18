@@ -6,7 +6,6 @@ import path from 'path';
 
 export namespace FontCreator {
     const space = 1;
-    const nameMap: any = { '_-1': '/', '_-2': '\\', '_-3': '*', '_-4': ':', '_-5': '?', '_-6': '"', '_-7': '<', '_-8': '>', '_-9': '|' }
     let fnt: Fnt;
     let maxFontSize: { width: number, height: number };
 
@@ -53,9 +52,7 @@ export namespace FontCreator {
             let p = a.offset;
             if (p) {
                 atlas.draw(a.img, p.x, p.y);
-                let name = nameMap[a.name] || a.name;
-                // console.log(name);
-                let frame = new Frame(name);
+                let frame = new Frame(a.name);
                 frame.setOffset(p.x, p.y);
                 frame.setSize(w, h);
                 frame.setMaxSize(maxFontSize.width, maxFontSize.height);
