@@ -32,7 +32,8 @@ module.exports = Editor.Panel.define({
                     return {
                         psdOutput: '',
                         saveFolder: '',
-                        name: ''
+                        name: '',
+                        fontSize: 20
                     };
                 }, methods: {
                     async openSave() {
@@ -68,7 +69,8 @@ module.exports = Editor.Panel.define({
                         Editor.Message.send('bit-map-font-creator', 'ok', JSON.stringify({
                             name: this.name,
                             input: this.psdOutput,
-                            output: this.saveFolder
+                            output: this.saveFolder,
+                            fontSize: this.fontSize
                         }));
                     }
                 },

@@ -2,7 +2,7 @@ export class Frame {
     private _offset: { x: number, y: number } = { x: 0, y: 0 };
     private _size: { w: number, h: number } = { w: 0, h: 0 };
     private _code: string = '';
-    private _maxSize: { w: number, h: number } = { w: 0, h: 0 };
+    private _fontSize: number = 20;
 
     constructor(name?: string) {
         this.setName(name);
@@ -24,13 +24,12 @@ export class Frame {
         this._size.h = h;
     }
 
-    public setMaxSize(w: number, h: number) {
-        this._maxSize.w = w;
-        this._maxSize.h = h;
+    public setFontSize(v: number) {
+        this._fontSize = v;
     }
 
     public getDictContent(): string {
-        return `char id=${this._code}   x=${this._offset.x}   y=${this._offset.y}    width=${this._size.w}    height=${this._size.h}    xoffset=0     yoffset=${this._maxSize.h - this._size.h}     xadvance=${this._size.w}    page=0  chnl=15
+        return `char id=${this._code}   x=${this._offset.x}   y=${this._offset.y}    width=${this._size.w}    height=${this._size.h}    xoffset=0     yoffset=${this._fontSize - this._size.h}     xadvance=${this._size.w}    page=0  chnl=15
 `;
     }
 }

@@ -14,7 +14,7 @@ export const methods: { [key: string]: (...any: any) => any } = {
         console.log(v);
         Editor.Message.broadcast("bit-map-font-creator:setState", '开始创建字体..');
         let a = JSON.parse(v);
-        if (!FontCreator.createFont(a.input, a.output, a.name)) {
+        if (!FontCreator.createFont(a.input, a.output, a.name, a.fontSize)) {
             Editor.Message.broadcast("bit-map-font-creator:setState", '字体创建失败！');
             return;
         }

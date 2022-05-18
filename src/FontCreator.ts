@@ -8,12 +8,14 @@ export namespace FontCreator {
     const space = 1;
     let fnt: Fnt;
     let maxFontSize: { width: number, height: number };
+    let fontSize: number;
 
-    export function createFont(srcPath: string, output: string, name = 'spriteAtlas'): boolean {
+    export function createFont(srcPath: string, output: string, name = 'spriteAtlas', size: number): boolean {
         if (!fs.existsSync(srcPath)) {
             console.error('目录不存在：', srcPath);
             return false;
         }
+        fontSize = size;
         // console.log('aaa', srcPath, output, name);
         let types = ['.png', '.PNG', '.jpg', '.jpeg', '.JPG', '.JPEG'];
         let imgs: { name: string, img: images.Image, offset: Vec2 }[] = [];
@@ -45,7 +47,6 @@ export namespace FontCreator {
     function drawImagsToAtlasAndSave(size: { width: number, height: number }, imgs: { name: string, img: images.Image, offset: Vec2 }[], savePath: string) {
         let { width, height } = size;
         let atlas = createImage(width, height);
-        let fontSize = 0;
         imgs.forEach(a => {
             let w = a.img.width(),
                 h = a.img.height();
@@ -55,9 +56,8 @@ export namespace FontCreator {
                 let frame = new Frame(a.name);
                 frame.setOffset(p.x, p.y);
                 frame.setSize(w, h);
-                frame.setMaxSize(maxFontSize.width, maxFontSize.height);
+                frame.setFontSize(fontSize);
                 fnt.addFrame(frame);
-                if (h > fontSize) fontSize = h;
             }
         });
         atlas.save(savePath + '.png');
